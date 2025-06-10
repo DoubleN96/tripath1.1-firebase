@@ -14,4 +14,4 @@
 - Clean and modern font for readability and professional look, focusing on clarity for property details.
 - Simple, geometric icons to represent amenities and features in a clear and concise manner.
 - Split screen layout for search results with property listings on one side and a dynamic map on the other. Card-based design for listings to showcase room details effectively.
-- Subtle hover effects on room cards and smooth transitions between reservation steps to enhance user engagement.
+- Subtle hover effects on room cards and smooth transitions between reservation steps to enhance user engagement.\n## Database\nUses Supabase to store room information accessible for agency and tenant versions.
