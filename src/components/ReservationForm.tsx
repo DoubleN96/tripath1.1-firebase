@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { simulateRedsysInitialTokenization, formatExpiryDateForDisplay, addReservation } from '@/lib/redsysUtils'; // Import Redsys utils
-import { calculateDurationInDecimalMonths } from '../ReservationSidebar'; // Import the helper
+import { calculateDurationInDecimalMonths } from './ReservationSidebar'; // Import the helper
 
 // Schema for Original Step 1 (Dates and Contact Info)
 const originalStep1Schema = z.object({
