@@ -5,6 +5,11 @@ import { parseISO } from 'date-fns';
 
 const API_BASE_URL = 'https://tripath.colivingsoft.site/api/version/2.0/default/rooms/feed';
 
+// In-memory cache to avoid unnecessary network calls
+let cachedRooms: Room[] | null = null;
+let lastFetchTime: number | null = null;
+const CACHE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+
 // Helper to get a currency symbol (simplified)
 function getCurrencySymbol(currencyCode: string): string {
   switch (currencyCode?.toUpperCase()) {
@@ -21,6 +26,11 @@ function getCurrencySymbol(currencyCode: string): string {
 
 export async function fetchRooms(): Promise<Room[]> {
   try {
+    // Return cached data if it's still fresh
+    if (cachedRooms && lastFetchTime && Date.now() - lastFetchTime < CACHE_DURATION_MS) {
+      return cachedRooms;
+    }
+
     const response = await fetch(API_BASE_URL);
     if (!response.ok) {
       let errorBody = '';
@@ -74,7 +84,7 @@ export async function fetchRooms(): Promise<Room[]> {
     }
 
 
-    return roomsData.map((item: any, index: number): Room => {
+    const mappedRooms = roomsData.map((item: any, index: number): Room => {
       const photos: RoomPhoto[] = Array.isArray(item.photos) && item.photos.length > 0
         ? item.photos.map((url: string, photoIndex: number) => ({
             id: (parseInt(item.id, 10) * 1000) + photoIndex + 1000, // Create a more unique ID for photos
@@ -157,6 +167,12 @@ export async function fetchRooms(): Promise<Room[]> {
         flat_video: item.flat_video || null,
       };
     });
+
+    // Cache the mapped result
+    cachedRooms = mappedRooms;
+    lastFetchTime = Date.now();
+
+    return mappedRooms;
 
   } catch (error) {
     console.error('Failed to fetch or parse rooms due to an exception:', error);
